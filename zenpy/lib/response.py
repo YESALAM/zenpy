@@ -241,6 +241,11 @@ class CombinationResponseHandler(GenericZendeskResponseHandler):
     def build(self, response):
         zenpy_objects = self.deserialize(response.json())
 
+        if all(['ticket' in zenpy_objects, 'job_status' in zenpy_objects]):
+            job_status = zenpy_objects['job_status']
+            job_status.ticket = zenpy_objects['ticket']
+            return job_status
+
         # JobStatus responses also include a ticket key so treat it specially.
         if 'job_status' in zenpy_objects:
             return zenpy_objects['job_status']
